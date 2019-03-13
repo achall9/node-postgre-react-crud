@@ -1,0 +1,233 @@
+import React, { Component } from 'react';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import AddIcon from '@material-ui/icons/Add';
+import TextField from '@material-ui/core/TextField';
+import { withStyles } from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import { rows } from '../../store';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { DialogContentText } from '@material-ui/core';
+
+
+const CustomTableCell = withStyles(theme => ({
+    head: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white,
+    },
+    body: {
+      fontSize: 14,
+    },
+}))(TableCell);
+
+const styles = theme => ({
+    root: {
+        width: '90%',
+        margin: 100,
+        overflowX: 'auto',
+    },
+    table: {
+        minWidth: 700,
+    },
+    textField: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+        width: 300,
+    },
+    row: {
+        '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.background.default,
+        },
+    },
+    container: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    root: {
+        width: '90%',
+        margin: 100,
+        overflowX: 'auto',
+      },
+    
+});
+
+class Index extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+          newItem: "",
+          list: []
+        };
+    }
+
+    updateInput(key, value) {
+        // update react state
+        this.setState({ [key]: value });
+    }
+
+    addItem() {
+        // create a new item
+        const newItem = {
+          id: 1 + Math.random(),
+          value: this.state.newItem.slice()
+        };
+    
+        // copy current list of items
+        const list = [...this.state.list];
+    
+        // add the new item to the list
+        list.push(newItem);
+    
+        // update state with new list, reset the new item input
+        this.setState({
+          list,
+          newItem: ""
+        });
+    }
+
+    deleteItem(id) {
+        // copy current list of items
+        const list = [...this.state.list];
+        // filter out the item being deleted
+        const updatedList = list.filter(item => item.id !== id);
+    
+        this.setState({ list: updatedList });
+    }
+
+    render() {
+        return (
+            <div>
+                <Typography variant="h3" style={{textAlign:"left", marginTop:100, marginLeft:100}}>
+                    Classes
+                </Typography>
+                <Paper className={classes.root}>
+                    <Table className={classes.table}>
+                    <TableHead>
+                        <TableRow>
+                        <CustomTableCell>Class Title</CustomTableCell>
+                        <CustomTableCell>Description</CustomTableCell>
+                        <CustomTableCell>Tickets</CustomTableCell>
+                        <CustomTableCell>Location</CustomTableCell>
+                        <CustomTableCell>Start Date/Time</CustomTableCell>
+                        <CustomTableCell>End Date/Time</CustomTableCell>
+                        <CustomTableCell>Action</CustomTableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rows.map(row => (
+                        <TableRow className={classes.row} key={row.id}>
+                            <CustomTableCell component="th" scope="row">
+                            {row.name}
+                            </CustomTableCell>
+                            <CustomTableCell>{row.description}</CustomTableCell>
+                            <CustomTableCell>{row.ticket}</CustomTableCell>
+                            <CustomTableCell>{row.location}</CustomTableCell>
+                            <CustomTableCell>{row.start_d}</CustomTableCell>
+                            <CustomTableCell>{row.end_d}</CustomTableCell>
+                            <CustomTableCell>
+                            <Button variant="contained" color="secondary" style={{backgroundColor: "green", marginRight: 10}} onClick={this.handleToggle} >
+                                <EditIcon />
+                                Edit
+                            </Button>
+                            <Dialog
+                            open={open}
+                            onClose={this.handleToggle}
+                            aria-labelledby="form-dialog-title"
+                            >
+                            <DialogTitle id="form-dialog-title">Edit Class</DialogTitle>
+                            <DialogContent>
+                                <form>
+                                    <TextField id="name" label="Name" value={name} onChange={this.handleChange('name')} className={classes.textField} /><br />
+                                    <TextField multiline rows="5" id="description" label="Description" value={description} onChange={this.handleChange('description')} className={classes.textField}/><br />
+                                    <TextField id="ticket" label="Ticket" value={ticket} onChange={this.handleChange('ticket')} className={classes.textField}/><br />
+                                    <TextField id="location" label="Location" value={location} onChange={this.handleChange('location')}  className={classes.textField}/><br />
+                                    <TextField id="start_d" label="Start Date/Time" type="datetime-local" value={start_d} InputLabelProps={{ shrink: true}} className={classes.textField}/><br />
+                                    <TextField id="end_d" label="End Date/Time" type="datetime-local" value={end_d} InputLabelProps={{ shrink: true}} className={classes.textField}/>                        
+                                </form>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button color="primary" variant="contained" style={{backgroundColor: "black"}}>
+                                Edit
+                                </Button>
+                            </DialogActions>
+                            </Dialog>
+                            <Button variant="contained" color="secondary" style={{backgroundColor: "red", marginRight: 10}} onClick={this.handleToggle} >
+                                <DeleteIcon />
+                                Delete
+                            </Button>
+                            <Dialog
+                            open={open}
+                            onClose={this.handleToggle}
+                            aria-labelledby="form-dialog-title"
+                            >
+                            <DialogTitle id="form-dialog-title">Delete Class</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    Are you sure you want to delete "Class Name"?
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button color="primary" variant="contained" style={{backgroundColor: "black"}}>
+                                Yes
+                                </Button>
+                                <Button color="default" variant="contained" onClick={this.handleToggle} >
+                                No
+                                </Button>
+                            </DialogActions>
+                            </Dialog>
+                            </CustomTableCell>
+                        </TableRow>
+                        ))}
+                    </TableBody>
+                    </Table>
+                </Paper>
+                <Button variant="contained" size="large" color="primary" onClick={this.handleToggle} style={{backgroundColor: "black"}}>
+                    <AddIcon />
+                    <Typography style={{color: "white"}}>Add Class</Typography>
+                </Button>
+                <Dialog
+                open={open}
+                onClose={this.handleToggle}
+                aria-labelledby="form-dialog-title"
+                >
+                <DialogTitle id="form-dialog-title" className={classes.togglehead} style={{backgroundColor: "black"}}>
+                    <Typography style={{color: "white"}}>Add Class</Typography>
+                </DialogTitle>
+                <DialogContent>
+                    <form>
+                        <TextField id="name" label="Name" value={name} onChange={this.handleChange('name')} className={classes.textField}/><br />
+                        <TextField multiline rows="5" id="description" label="Description" value={description} onChange={this.handleChange('description')} className={classes.textField}/><br />
+                        <TextField id="ticket" label="Ticket" value={ticket} onChange={this.handleChange('ticket')} className={classes.textField}/><br />
+                        <TextField id="location" label="Location" value={location} onChange={this.handleChange('location')} className={classes.textField}/><br />
+                        <TextField id="start_d" label="Start Date/Time" type="datetime-local" value={start_d} onChange={this.handleChange('start_d')} className={classes.textField}/><br />
+                        <TextField id="end_d" label="End Date/Time" type="datetime-local" value={end_d}  onChange={this.handleChange('end_d')}  className={classes.textField}/>                        
+                    </form>
+                </DialogContent>
+                <DialogActions>
+                    <Button color="primary" variant="contained" style={{backgroundColor: "black"}} onClick={this.handleSubmit}>
+                        Add Class
+                    </Button>
+                    <Button color="default" variant="contained" onClick={this.handleToggle}>
+                        Cancel
+                    </Button>
+                </DialogActions>
+                </Dialog>
+        
+            </div>
+        )
+    }
+}
+
+export default Index;

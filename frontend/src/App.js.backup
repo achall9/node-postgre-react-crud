@@ -1,0 +1,63 @@
+import React, { Component, Fragment } from 'react';
+import './App.css';
+import Dashboard from './components/dashboard/Dashboard';
+import Class from './components/classes';
+import Sidebar from './components/layouts/Sidebar';
+import Navbar from './components/layouts/Navbar';
+import SignIn from './components/auth/login';
+import Register from './components/auth/register';
+import { Route, BrowserRouter as Router } from 'react-router-dom'
+
+
+const root = {
+  display: 'flex',
+};
+
+
+class App extends Component {
+  state = {
+    open: false,
+  };
+
+  handleDrawerOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleDrawerClose = () => {
+    this.setState({ open: false });
+  };
+
+
+
+  render() {
+    return (
+      <div className="App">
+        <div style={root}>
+          <Router>
+            <Fragment>
+              <Route exact path="/" component={SignIn} />
+              <Route path="/signup" component={Register} />
+            </Fragment>
+            {/* <Fragment>
+              <Navbar  
+                open = {this.state.open}
+                _handleDrawerClose={this.handleDrawerClose} 
+                _handleDrawerOpen={this.handleDrawerOpen}
+              />
+              <Sidebar 
+                open = {this.state.open}
+                _handleDrawerClose={this.handleDrawerClose} 
+                _handleDrawerOpen={this.handleDrawerOpen}
+              />
+              <Route path="/dashboard" component={Dashboard} />
+              <Route path="/classes" component={Class}/>
+              <Route path="/logout"  component={Dashboard}/>
+            </Fragment> */}
+          </Router>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default App;

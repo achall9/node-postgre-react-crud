@@ -1,0 +1,90 @@
+image: node:10.15.0
+
+services:
+  - postgres:9.6.6
+
+variables:
+  POSTGRES_DB: spisogdrikk_db_test
+  POSTGRES_HOST: postgres
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: ''
+
+stages:
+  - install
+  - audit
+  - test
+  - migrate
+  - deploy
+
+# install
+yarn-install:
+  stage: install
+  script:
+    - yarn --frozen-lockfile
+  artifacts:
+    paths:
+      - node_modules/
+
+# audit
+yarn-audit:
+  stage: audit
+  script:
+    - yarn audit
+  allow_failure: true
+
+eslint:
+  stage: audit
+  script:
+    - yarn eslint
+
+prettier:
+  stage: audit
+  script:
+    - yarn prettier
+
+# test
+test:
+  stage: test
+  script:
+    - yarn test
+
+future-test:
+  stage: test
+  script:
+    - yarn upgrade --latest
+    - yarn test
+  allow_failure: true
+
+# migrate
+migrate-staging:
+  stage: migrate
+  script:
+    - node_modules/.bin/knex migrate:latest --env staging
+  only:
+    - staging
+
+migrate-prod:
+  stage: migrate
+  script:
+    - node_modules/.bin/knex migrate:latest --env production
+  only:
+    - master
+
+# deploy
+deploy-staging:
+  stage: deploy
+  image: python:latest
+  script:
+    - pip install awsebcli --ignore-installed six
+    - eb deploy $DEV_EB_ENV --timeout 40
+  only:
+    - staging
+
+deploy-prod:
+  stage: deploy
+  image: python:latest
+  script:
+    - pip install awsebcli --ignore-installed six
+    - eb deploy $PROD_EB_ENV --timeout 40
+  only:
+    - master

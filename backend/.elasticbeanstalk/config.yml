@@ -1,0 +1,19 @@
+branch-defaults:
+  master:
+    environment: api-spisogdrikk-no-prod
+environment-defaults:
+  api-spisogdrikk-no-prod:
+    branch: null
+    repository: null
+global:
+  application_name: api-spisogdrikk-no
+  default_ec2_keyname: null
+  default_platform: arn:aws:elasticbeanstalk:eu-north-1::platform/Docker running on 64bit Amazon Linux/2.12.6
+  default_region: eu-north-1
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: null
+  sc: git
+  workspace_type: Application
